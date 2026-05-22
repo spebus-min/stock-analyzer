@@ -1,0 +1,663 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>台灣股票智慧分析</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #f5f3ee;
+    --surface: #ffffff;
+    --surface2: #f0ede6;
+    --border: #e2ddd5;
+    --border2: #ccc8c0;
+    --text: #1a1814;
+    --text2: #5c5852;
+    --text3: #9c9890;
+    --accent: #1a6b4a;
+    --accent-light: #e8f5ee;
+    --accent2: #b85c1a;
+    --red: #c0392b;
+    --green: #1a6b4a;
+    --mono: 'DM Mono', monospace;
+    --sans: 'Noto Sans TC', sans-serif;
+  }
+
+  body {
+    font-family: var(--sans);
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    padding: 0;
+  }
+
+  /* ── Header ── */
+  header {
+    background: var(--text);
+    color: #f5f3ee;
+    padding: 1.5rem 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 2px solid var(--accent);
+  }
+  header h1 {
+    font-size: 1.1rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    font-family: var(--mono);
+  }
+  header .sub {
+    font-size: 0.7rem;
+    color: #9c9890;
+    font-family: var(--mono);
+    letter-spacing: 0.1em;
+  }
+
+  /* ── Main layout ── */
+  main {
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 2.5rem 1.5rem;
+  }
+
+  /* ── Search section ── */
+  .search-wrap {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 2px;
+    padding: 2rem;
+    margin-bottom: 2rem;
+  }
+  .search-label {
+    font-size: 0.7rem;
+    font-family: var(--mono);
+    letter-spacing: 0.1em;
+    color: var(--text3);
+    text-transform: uppercase;
+    margin-bottom: 0.75rem;
+  }
+  .search-row {
+    display: flex;
+    gap: 0;
+    margin-bottom: 1rem;
+  }
+  .search-row input {
+    flex: 1;
+    font-family: var(--sans);
+    font-size: 1.1rem;
+    padding: 0.75rem 1rem;
+    border: 1.5px solid var(--border2);
+    border-right: none;
+    border-radius: 2px 0 0 2px;
+    background: var(--bg);
+    color: var(--text);
+    outline: none;
+    transition: border-color 0.15s;
+  }
+  .search-row input:focus { border-color: var(--accent); }
+  .search-row input::placeholder { color: var(--text3); }
+  .search-row button {
+    font-family: var(--mono);
+    font-size: 0.85rem;
+    letter-spacing: 0.06em;
+    padding: 0 1.5rem;
+    background: var(--accent);
+    color: white;
+    border: none;
+    border-radius: 0 2px 2px 0;
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+  .search-row button:hover { background: #145c3c; }
+
+  .chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    align-items: center;
+  }
+  .chips-label { font-size: 0.7rem; color: var(--text3); font-family: var(--mono); letter-spacing: 0.06em; }
+  .chip {
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    padding: 4px 12px;
+    border: 1px solid var(--border2);
+    border-radius: 2px;
+    background: none;
+    color: var(--text2);
+    cursor: pointer;
+    transition: all 0.12s;
+    letter-spacing: 0.04em;
+  }
+  .chip:hover { background: var(--accent-light); border-color: var(--accent); color: var(--accent); }
+
+  /* ── Loading ── */
+  #loading-ui {
+    display: none;
+    text-align: center;
+    padding: 3rem;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 2px;
+  }
+  .loading-bar-wrap {
+    width: 200px;
+    height: 2px;
+    background: var(--border);
+    margin: 0 auto 1rem;
+    overflow: hidden;
+    border-radius: 2px;
+  }
+  .loading-bar {
+    height: 100%;
+    background: var(--accent);
+    width: 30%;
+    animation: sweep 1.2s ease-in-out infinite;
+  }
+  @keyframes sweep {
+    0% { transform: translateX(-200%); }
+    100% { transform: translateX(700%); }
+  }
+  #loading-msg { font-size: 0.8rem; color: var(--text3); font-family: var(--mono); letter-spacing: 0.06em; }
+
+  /* ── Error ── */
+  .error-box {
+    background: #fff5f5;
+    border: 1px solid #ffccc7;
+    border-left: 3px solid var(--red);
+    padding: 1rem 1.25rem;
+    font-size: 0.875rem;
+    color: var(--red);
+    border-radius: 2px;
+  }
+
+  /* ── Result ── */
+  #content-ui { display: none; }
+
+  .stock-hero {
+    background: var(--text);
+    color: #f5f3ee;
+    padding: 1.75rem 2rem;
+    margin-bottom: 1.5rem;
+    border-radius: 2px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+  .stock-hero-left .code {
+    font-family: var(--mono);
+    font-size: 0.75rem;
+    color: var(--text3);
+    letter-spacing: 0.1em;
+    margin-bottom: 4px;
+  }
+  .stock-hero-left .name {
+    font-size: 1.8rem;
+    font-weight: 700;
+    line-height: 1.2;
+    margin-bottom: 8px;
+  }
+  .tags { display: flex; flex-wrap: wrap; gap: 5px; }
+  .tag {
+    font-family: var(--mono);
+    font-size: 0.65rem;
+    padding: 3px 8px;
+    border: 1px solid rgba(255,255,255,0.2);
+    border-radius: 2px;
+    color: rgba(255,255,255,0.7);
+    letter-spacing: 0.06em;
+  }
+  .stock-hero-right { text-align: right; }
+  .price-main {
+    font-family: var(--mono);
+    font-size: 2.2rem;
+    font-weight: 500;
+    letter-spacing: -0.01em;
+  }
+  .price-change {
+    font-family: var(--mono);
+    font-size: 0.85rem;
+    margin-top: 4px;
+  }
+  .pos { color: #5dba82; }
+  .neg { color: #e87461; }
+
+  /* ── Metrics grid ── */
+  .metrics-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 1px;
+    background: var(--border);
+    border: 1px solid var(--border);
+    border-radius: 2px;
+    overflow: hidden;
+    margin-bottom: 1.5rem;
+  }
+  .metric {
+    background: var(--surface);
+    padding: 1.25rem;
+  }
+  .metric-label {
+    font-family: var(--mono);
+    font-size: 0.65rem;
+    letter-spacing: 0.1em;
+    color: var(--text3);
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+  .metric-value {
+    font-family: var(--mono);
+    font-size: 1.4rem;
+    font-weight: 500;
+    color: var(--text);
+  }
+  .metric-sub {
+    font-size: 0.7rem;
+    color: var(--text3);
+    font-family: var(--mono);
+    margin-top: 4px;
+  }
+
+  /* ── Sections ── */
+  .section {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 2px;
+    margin-bottom: 1.25rem;
+    overflow: hidden;
+  }
+  .section-header {
+    padding: 0.75rem 1.5rem;
+    border-bottom: 1px solid var(--border);
+    font-family: var(--mono);
+    font-size: 0.65rem;
+    letter-spacing: 0.1em;
+    color: var(--text3);
+    text-transform: uppercase;
+    background: var(--surface2);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .section-header::before {
+    content: '';
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    background: var(--accent);
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+  .section-body { padding: 1.5rem; }
+
+  .overview-text {
+    font-size: 0.95rem;
+    line-height: 1.85;
+    color: var(--text2);
+  }
+
+  .fin-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+  }
+  .fin-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.6rem 0;
+    border-bottom: 1px solid var(--border);
+    font-size: 0.875rem;
+  }
+  .fin-row:last-child { border-bottom: none; }
+  .fin-row:nth-child(odd) { padding-right: 1.5rem; }
+  .fin-row:nth-child(even) { padding-left: 1.5rem; border-left: 1px solid var(--border); }
+  .fin-label { color: var(--text3); font-size: 0.8rem; }
+  .fin-value { font-family: var(--mono); font-weight: 500; font-size: 0.875rem; }
+
+  .analyst-box {
+    margin-top: 1rem;
+    padding: 1rem 1.25rem;
+    background: var(--accent-light);
+    border-left: 3px solid var(--accent);
+    border-radius: 0 2px 2px 0;
+    font-size: 0.875rem;
+    color: var(--text);
+    line-height: 1.7;
+  }
+
+  #chart-wrap { position: relative; height: 260px; }
+
+  /* ── Source note ── */
+  .source-note {
+    font-size: 0.7rem;
+    color: var(--text3);
+    font-family: var(--mono);
+    letter-spacing: 0.04em;
+    padding: 1rem 0;
+    border-top: 1px solid var(--border);
+    margin-top: 0.5rem;
+    line-height: 1.7;
+  }
+
+  /* ── Disclaimer ── */
+  .disclaimer {
+    background: #fffbf0;
+    border: 1px solid #f5e4b3;
+    border-left: 3px solid var(--accent2);
+    border-radius: 2px;
+    padding: 0.875rem 1.25rem;
+    font-size: 0.75rem;
+    color: #7a5c1a;
+    line-height: 1.6;
+    margin-bottom: 1.5rem;
+  }
+
+  @media (max-width: 540px) {
+    .stock-hero { flex-direction: column; }
+    .stock-hero-right { text-align: left; }
+    .fin-grid { grid-template-columns: 1fr; }
+    .fin-row:nth-child(even) { padding-left: 0; border-left: none; }
+    .fin-row:nth-child(odd) { padding-right: 0; }
+    header { flex-direction: column; gap: 4px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div>
+    <div class="sub">TW EQUITY RESEARCH</div>
+    <h1>台灣股票智慧分析</h1>
+  </div>
+  <div style="font-family:var(--mono);font-size:0.7rem;color:#9c9890;letter-spacing:0.06em;">POWERED BY CLAUDE AI</div>
+</header>
+
+<main>
+
+  <div class="disclaimer">
+    ⚠ 本工具資料由 AI 整理，僅供參考，不構成投資建議。實際投資請以台灣證券交易所或券商官網即時資料為準。
+  </div>
+
+  <div class="search-wrap">
+    <div class="search-label">輸入股票名稱或代碼</div>
+    <div class="search-row">
+      <input type="text" id="stock-input" placeholder="例：台積電  或  2330" autocomplete="off" />
+      <button onclick="startAnalysis()">分析</button>
+    </div>
+    <div class="chips">
+      <span class="chips-label">快速：</span>
+      <button class="chip" onclick="quickSearch('台積電 2330')">台積電 2330</button>
+      <button class="chip" onclick="quickSearch('鴻海 2317')">鴻海 2317</button>
+      <button class="chip" onclick="quickSearch('聯發科 2454')">聯發科 2454</button>
+      <button class="chip" onclick="quickSearch('中華電信 2412')">中華電 2412</button>
+      <button class="chip" onclick="quickSearch('台灣大哥大 3045')">台灣大 3045</button>
+      <button class="chip" onclick="quickSearch('富邦金 2881')">富邦金 2881</button>
+    </div>
+  </div>
+
+  <div id="loading-ui">
+    <div class="loading-bar-wrap"><div class="loading-bar"></div></div>
+    <div id="loading-msg">AI 正在搜尋資料中...</div>
+  </div>
+
+  <div id="content-ui"></div>
+
+</main>
+
+<script>
+// ── 注意：使用前請將下方 YOUR_API_KEY 替換成你的 Anthropic API 金鑰 ──
+// 取得方式：登入 https://console.anthropic.com → API Keys → Create Key
+const ANTHROPIC_API_KEY = 'YOUR_API_KEY';
+
+let chartInstance = null;
+
+function quickSearch(val) {
+  document.getElementById('stock-input').value = val;
+  startAnalysis();
+}
+
+document.getElementById('stock-input').addEventListener('keydown', e => {
+  if (e.key === 'Enter') startAnalysis();
+});
+
+async function startAnalysis() {
+  const input = document.getElementById('stock-input').value.trim();
+  if (!input) return;
+
+  const loadingUI = document.getElementById('loading-ui');
+  const contentUI = document.getElementById('content-ui');
+
+  loadingUI.style.display = 'block';
+  contentUI.style.display = 'none';
+  contentUI.innerHTML = '';
+  if (chartInstance) { chartInstance.destroy(); chartInstance = null; }
+
+  const msgs = [
+    'AI 正在搜尋鉅亨網資料...',
+    '分析財報狗財務指標...',
+    '整理股感公司資訊...',
+    '計算歷史股價趨勢...',
+    '生成完整分析報告...'
+  ];
+  let idx = 0;
+  const msgEl = document.getElementById('loading-msg');
+  const timer = setInterval(() => { idx = (idx+1)%msgs.length; msgEl.textContent = msgs[idx]; }, 1800);
+
+  const systemPrompt = `你是台灣股票分析師，請根據使用者輸入提供完整分析報告。
+只回傳 JSON，不含任何說明文字或 markdown 格式。
+格式：
+{
+  "code": "股票代碼",
+  "name": "公司中文名稱",
+  "fullName": "公司完整名稱",
+  "industry": "產業別",
+  "market": "上市/上櫃/興櫃",
+  "tags": ["標籤1","標籤2","標籤3"],
+  "overview": "公司剖析200字內，含成立年份、主要業務、市場地位、競爭優勢",
+  "currentPrice": 數字,
+  "priceChange": 數字,
+  "priceChangePct": 數字,
+  "pe": 數字,
+  "pb": 數字,
+  "dividendYield": 數字,
+  "eps": 數字,
+  "marketCap": "市值字串",
+  "revenue": "近年營收字串",
+  "roe": 數字,
+  "debtRatio": 數字,
+  "analystView": "分析師觀點2-3句",
+  "priceHistory": {
+    "labels": ["2024-01","2024-02","2024-03","2024-04","2024-05","2024-06","2024-07","2024-08","2024-09","2024-10","2024-11","2024-12","2025-01","2025-02","2025-03"],
+    "prices": [數字x15]
+  },
+  "sources": ["鉅亨網","財報狗","股感"],
+  "note": "資料說明",
+  "dataDate": "資料參考日期"
+}`;
+
+  try {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-api-key': ANTHROPIC_API_KEY,
+        'anthropic-version': '2023-06-01',
+        'anthropic-dangerous-direct-browser-access': 'true'
+      },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 1000,
+        tools: [{ type: 'web_search_20250305', name: 'web_search' }],
+        system: systemPrompt,
+        messages: [{ role: 'user', content: `分析台灣股票：${input}。先用 web search 搜尋最新資料，再回傳 JSON。` }]
+      })
+    });
+
+    clearInterval(timer);
+
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      if (err.error && err.error.message && err.error.message.includes('API key')) {
+        throw new Error('API 金鑰無效，請確認 index.html 中的 ANTHROPIC_API_KEY 是否已正確填入');
+      }
+      throw new Error(`API 回應錯誤 (${res.status})`);
+    }
+
+    const data = await res.json();
+    const textBlock = data.content && data.content.find(b => b.type === 'text');
+    if (!textBlock) throw new Error('沒有收到文字回應');
+
+    let raw = textBlock.text.trim().replace(/```json|```/g, '').trim();
+    const match = raw.match(/\{[\s\S]*\}/);
+    if (!match) throw new Error('無法解析資料格式');
+
+    const d = JSON.parse(match[0]);
+    renderReport(d);
+    loadingUI.style.display = 'none';
+    contentUI.style.display = 'block';
+
+  } catch (err) {
+    clearInterval(timer);
+    loadingUI.style.display = 'none';
+    contentUI.style.display = 'block';
+    contentUI.innerHTML = `<div class="error-box">⚠ 分析失敗：${err.message}</div>`;
+  }
+}
+
+function renderReport(d) {
+  const pos = d.priceChange >= 0;
+  const sign = pos ? '+' : '';
+  const cls = pos ? 'pos' : 'neg';
+
+  document.getElementById('content-ui').innerHTML = `
+    <div class="stock-hero">
+      <div class="stock-hero-left">
+        <div class="code">${d.code} · ${d.market} · ${d.industry}</div>
+        <div class="name">${d.name}</div>
+        <div class="tags">${(d.tags||[]).map(t=>`<span class="tag">${t}</span>`).join('')}</div>
+      </div>
+      <div class="stock-hero-right">
+        <div class="price-main">$${Number(d.currentPrice).toLocaleString()}</div>
+        <div class="price-change ${cls}">${sign}${Number(d.priceChange).toFixed(1)} &nbsp;(${sign}${Number(d.priceChangePct).toFixed(2)}%)</div>
+      </div>
+    </div>
+
+    <div class="metrics-grid">
+      <div class="metric">
+        <div class="metric-label">本益比 P/E</div>
+        <div class="metric-value">${Number(d.pe).toFixed(1)}x</div>
+        <div class="metric-sub">EPS NT$${Number(d.eps).toFixed(2)}</div>
+      </div>
+      <div class="metric">
+        <div class="metric-label">殖利率</div>
+        <div class="metric-value">${Number(d.dividendYield).toFixed(2)}%</div>
+        <div class="metric-sub">P/B ${Number(d.pb).toFixed(2)}x</div>
+      </div>
+      <div class="metric">
+        <div class="metric-label">市值</div>
+        <div class="metric-value">${d.marketCap}</div>
+        <div class="metric-sub">近年營收 ${d.revenue}</div>
+      </div>
+      <div class="metric">
+        <div class="metric-label">股東權益報酬率</div>
+        <div class="metric-value">${Number(d.roe).toFixed(1)}%</div>
+        <div class="metric-sub">負債比 ${Number(d.debtRatio).toFixed(1)}%</div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-header">公司剖析</div>
+      <div class="section-body">
+        <div class="overview-text">${d.overview}</div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-header">歷史股價走勢（近15個月）</div>
+      <div class="section-body">
+        <div id="chart-wrap"><canvas id="price-chart"></canvas></div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-header">財務指標</div>
+      <div class="section-body">
+        <div class="fin-grid">
+          <div class="fin-row"><span class="fin-label">本益比</span><span class="fin-value">${Number(d.pe).toFixed(1)}x</span></div>
+          <div class="fin-row"><span class="fin-label">殖利率</span><span class="fin-value">${Number(d.dividendYield).toFixed(2)}%</span></div>
+          <div class="fin-row"><span class="fin-label">股價淨值比</span><span class="fin-value">${Number(d.pb).toFixed(2)}x</span></div>
+          <div class="fin-row"><span class="fin-label">ROE</span><span class="fin-value">${Number(d.roe).toFixed(1)}%</span></div>
+          <div class="fin-row"><span class="fin-label">EPS</span><span class="fin-value">NT$${Number(d.eps).toFixed(2)}</span></div>
+          <div class="fin-row"><span class="fin-label">負債比率</span><span class="fin-value">${Number(d.debtRatio).toFixed(1)}%</span></div>
+        </div>
+        <div class="analyst-box">${d.analystView}</div>
+      </div>
+    </div>
+
+    <div class="source-note">
+      資料來源：${(d.sources||[]).join('、')} &nbsp;·&nbsp; 參考日期：${d.dataDate}<br>
+      ${d.note}
+    </div>
+  `;
+
+  setTimeout(() => drawChart(d.priceHistory), 80);
+}
+
+function drawChart(h) {
+  const canvas = document.getElementById('price-chart');
+  if (!canvas || !h) return;
+
+  if (chartInstance) chartInstance.destroy();
+  chartInstance = new Chart(canvas, {
+    type: 'line',
+    data: {
+      labels: h.labels,
+      datasets: [{
+        data: h.prices,
+        borderColor: '#1a6b4a',
+        borderWidth: 2,
+        backgroundColor: 'rgba(26,107,74,0.07)',
+        fill: true,
+        tension: 0.3,
+        pointRadius: 3,
+        pointBackgroundColor: '#1a6b4a',
+        pointBorderWidth: 0,
+        pointHoverRadius: 5
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: { callbacks: { label: ctx => `NT$ ${Number(ctx.raw).toLocaleString()}` } }
+      },
+      scales: {
+        x: {
+          grid: { color: 'rgba(0,0,0,0.05)' },
+          ticks: { color: '#9c9890', font: { size: 11, family: "'DM Mono', monospace" }, maxTicksLimit: 8 }
+        },
+        y: {
+          grid: { color: 'rgba(0,0,0,0.05)' },
+          ticks: {
+            color: '#9c9890',
+            font: { size: 11, family: "'DM Mono', monospace" },
+            callback: v => `$${Number(v).toLocaleString()}`
+          }
+        }
+      }
+    }
+  });
+}
+</script>
+</body>
+</html>
