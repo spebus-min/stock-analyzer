@@ -1,445 +1,355 @@
 <!DOCTYPE html>
 <html lang="zh-TW">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>SHOCKSHOCKSTOCK</title>
+
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+
 <style>
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-  :root {
-    --bg: #f5f3ee;
-    --surface: #ffffff;
-    --surface2: #f0ede6;
-    --border: #e2ddd5;
-    --border2: #ccc8c0;
-    --text: #1a1814;
-    --text2: #5c5852;
-    --text3: #9c9890;
-    --accent: #1a6b4a;
-    --accent-light: #e8f5ee;
-    --accent2: #b85c1a;
-    --red: #c0392b;
-    --green: #1a6b4a;
-    --mono: 'DM Mono', monospace;
-    --sans: 'Noto Sans TC', sans-serif;
-  }
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+}
 
-  body {
- 
-    background-image: url('https://images.unsplash.com/photo-1526304640581-d334cdbbf45e?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D');
-    
-  
-    background-size: cover; 
-    
-   
-    background-attachment: fixed; 
-    
-    
-    background-position: center; 
-    
- 
-    background-repeat: no-repeat; }
-  
+:root{
+  --bg:#f5f3ee;
+  --surface:#ffffff;
+  --surface2:#f0ede6;
+  --border:#e2ddd5;
+  --border2:#ccc8c0;
+  --text:#1a1814;
+  --text2:#5c5852;
+  --text3:#9c9890;
+  --accent:#1a6b4a;
+  --accent-light:#e8f5ee;
+  --red:#c0392b;
+  --mono:'DM Mono', monospace;
+  --sans:'Noto Sans TC', sans-serif;
+}
 
-  /* ── Header ── */
-  header {
-    background: var(--text);
-    color: #f5f3ee;
-    padding: 1.5rem 2rem;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    border-bottom: 2px solid var(--accent);
-  }
-  header h1 {
-    font-size: 1.1rem;
-    font-weight: 700;
-    letter-spacing: 0.08em;
-    font-family: var(--mono);
-  }
-  header .sub {
-    font-size: 0.7rem;
-    color: #9c9890;
-    font-family: var(--mono);
-    letter-spacing: 0.1em;
-  }
+body{
+  font-family:var(--sans);
+  background-image:url('https://images.unsplash.com/photo-1526304640581-d334cdbbf45e?q=80&w=1170&auto=format&fit=crop');
+  background-size:cover;
+  background-position:center;
+  background-attachment:fixed;
+  min-height:100vh;
+}
 
-  /* ── Main layout ── */
-  main {
-    max-width: 860px;
-    margin: 0 auto;
-    padding: 2.5rem 1.5rem;
-  }
+header{
+  background:#111;
+  color:#fff;
+  padding:1.5rem 2rem;
+  border-bottom:2px solid var(--accent);
+}
 
-  /* ── Search section ── */
-  .search-wrap {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 2px;
-    padding: 2rem;
-    margin-bottom: 2rem;
-  }
-  .search-label {
-    font-size: 0.7rem;
-    font-family: var(--mono);
-    letter-spacing: 0.1em;
-    color: var(--text3);
-    text-transform: uppercase;
-    margin-bottom: 0.75rem;
-  }
-  .search-row {
-    display: flex;
-    gap: 0;
-    margin-bottom: 1rem;
-  }
-  .search-row input {
-    flex: 1;
-    font-family: var(--sans);
-    font-size: 1.1rem;
-    padding: 0.75rem 1rem;
-    border: 1.5px solid var(--border2);
-    border-right: none;
-    border-radius: 2px 0 0 2px;
-    background: var(--bg);
-    color: var(--text);
-    outline: none;
-    transition: border-color 0.15s;
-  }
-  .search-row input:focus { border-color: var(--accent); }
-  .search-row input::placeholder { color: var(--text3); }
-  .search-row button {
-    font-family: var(--mono);
-    font-size: 0.85rem;
-    letter-spacing: 0.06em;
-    padding: 0 1.5rem;
-    background: var(--accent);
-    color: white;
-    border: none;
-    border-radius: 0 2px 2px 0;
-    cursor: pointer;
-    transition: background 0.15s;
-  }
-  .search-row button:hover { background: #e3cc02; }
+header h1{
+  font-size:1.2rem;
+  font-family:var(--mono);
+}
 
-  .chips {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 6px;
-    align-items: center;
-  }
-  .chips-label { font-size: 0.7rem; color: var(--text3); font-family: var(--mono); letter-spacing: 0.06em; }
-  .chip {
-    font-family: var(--mono);
-    font-size: 0.72rem;
-    padding: 4px 12px;
-    border: 1px solid var(--border2);
-    border-radius: 2px;
-    background: none;
-    color: var(--text2);
-    cursor: pointer;
-    transition: all 0.12s;
-    letter-spacing: 0.04em;
-  }
-  .chip:hover { background: var(--accent-light); border-color: var(--accent); color: var(--accent); }
+main{
+  max-width:900px;
+  margin:auto;
+  padding:2rem 1rem;
+}
 
-  /* ── Loading ── */
-  #loading-ui {
-    display: none;
-    text-align: center;
-    padding: 3rem;
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 2px;
-  }
-  .loading-bar-wrap {
-    width: 200px;
-    height: 2px;
-    background: var(--border);
-    margin: 0 auto 1rem;
-    overflow: hidden;
-    border-radius: 2px;
-  }
-  .loading-bar {
-    height: 100%;
-    background: var(--accent);
-    width: 30%;
-    animation: sweep 1.2s ease-in-out infinite;
-  }
-  @keyframes sweep {
-    0% { transform: translateX(-200%); }
-    100% { transform: translateX(700%); }
-  }
-  #loading-msg { font-size: 0.8rem; color: var(--text3); font-family: var(--mono); letter-spacing: 0.06em; }
+.search-wrap{
+  background:white;
+  padding:2rem;
+  border:1px solid var(--border);
+}
 
-  /* ── Error ── */
-  .error-box {
-    background: #fff5f5;
-    border: 1px solid #ffccc7;
-    border-left: 3px solid var(--red);
-    padding: 1rem 1.25rem;
-    font-size: 0.875rem;
-    color: var(--red);
-    border-radius: 2px;
-  }
+.search-label{
+  font-size:.8rem;
+  margin-bottom:.8rem;
+  color:#777;
+}
 
-  /* ── Result ── */
-  #content-ui { display: none; }
+.search-row{
+  display:flex;
+}
 
-  .stock-hero {
-    background: var(--text);
-    color: #f5f3ee;
-    padding: 1.75rem 2rem;
-    margin-bottom: 1.5rem;
-    border-radius: 2px;
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    flex-wrap: wrap;
-    gap: 1rem;
-  }
-  .stock-hero-left .code {
-    font-family: var(--mono);
-    font-size: 0.75rem;
-    color: var(--text3);
-    letter-spacing: 0.1em;
-    margin-bottom: 4px;
-  }
-  .stock-hero-left .name {
-    font-size: 1.8rem;
-    font-weight: 700;
-    line-height: 1.2;
-    margin-bottom: 8px;
-  }
-  .tags { display: flex; flex-wrap: wrap; gap: 5px; }
-  .tag {
-    font-family: var(--mono);
-    font-size: 0.65rem;
-    padding: 3px 8px;
-    border: 1px solid rgba(255,255,255,0.2);
-    border-radius: 2px;
-    color: rgba(255,255,255,0.7);
-    letter-spacing: 0.06em;
-  }
-  .stock-hero-right { text-align: right; }
-  .price-main {
-    font-family: var(--mono);
-    font-size: 2.2rem;
-    font-weight: 500;
-    letter-spacing: -0.01em;
-  }
-  .price-change {
-    font-family: var(--mono);
-    font-size: 0.85rem;
-    margin-top: 4px;
-  }
-  .pos { color: #5dba82; }
-  .neg { color: #e87461; }
+.search-row input{
+  flex:1;
+  padding:1rem;
+  border:1px solid #ccc;
+  font-size:1.1rem;
+}
 
-  /* ── Metrics grid ── */
-  .metrics-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-    gap: 1px;
-    background: var(--border);
-    border: 1px solid var(--border);
-    border-radius: 2px;
-    overflow: hidden;
-    margin-bottom: 1.5rem;
-  }
-  .metric {
-    background: var(--surface);
-    padding: 1.25rem;
-  }
-  .metric-label {
-    font-family: var(--mono);
-    font-size: 0.65rem;
-    letter-spacing: 0.1em;
-    color: var(--text3);
-    text-transform: uppercase;
-    margin-bottom: 6px;
-  }
-  .metric-value {
-    font-family: var(--mono);
-    font-size: 1.4rem;
-    font-weight: 500;
-    color: var(--text);
-  }
-  .metric-sub {
-    font-size: 0.7rem;
-    color: var(--text3);
-    font-family: var(--mono);
-    margin-top: 4px;
+.search-row button{
+  width:120px;
+  border:none;
+  background:var(--accent);
+  color:white;
+  cursor:pointer;
+  font-size:1rem;
+}
+
+.search-row button:hover{
+  opacity:.9;
+}
+
+.chips{
+  margin-top:1rem;
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+}
+
+.chip{
+  padding:6px 12px;
+  border:1px solid #ccc;
+  background:white;
+  cursor:pointer;
+}
+
+#loading-ui{
+  display:none;
+  background:white;
+  padding:2rem;
+  margin-top:1rem;
+  border:1px solid var(--border);
+}
+
+#content-ui{
+  display:none;
+  margin-top:1rem;
+}
+
+.stock-hero{
+  background:#111;
+  color:white;
+  padding:2rem;
+  display:flex;
+  justify-content:space-between;
+  flex-wrap:wrap;
+  gap:1rem;
+}
+
+.name{
+  font-size:2rem;
+  font-weight:700;
+}
+
+.code{
+  color:#aaa;
+  margin-bottom:8px;
+}
+
+.price-main{
+  font-size:2.2rem;
+  font-family:var(--mono);
+}
+
+.price-change{
+  margin-top:8px;
+}
+
+.pos{
+  color:#5dba82;
+}
+
+.neg{
+  color:#ff6b6b;
+}
+
+.metrics-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+  gap:1px;
+  background:#ddd;
+  margin-top:1rem;
+}
+
+.metric{
+  background:white;
+  padding:1rem;
+}
+
+.metric-label{
+  font-size:.75rem;
+  color:#777;
+  margin-bottom:8px;
+}
+
+.metric-value{
+  font-size:1.4rem;
+  font-family:var(--mono);
+}
+
+.section{
+  margin-top:1rem;
+  background:white;
+  border:1px solid var(--border);
+}
+
+.section-header{
+  padding:1rem;
+  background:var(--surface2);
+  border-bottom:1px solid var(--border);
+  font-size:.8rem;
+  color:#666;
+}
+
+.section-body{
+  padding:1.5rem;
+}
+
+.overview-text{
+  line-height:1.9;
+}
+
+.fin-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:1rem;
+}
+
+.fin-row{
+  display:flex;
+  justify-content:space-between;
+  border-bottom:1px solid #eee;
+  padding:.7rem 0;
+}
+
+.error-box{
+  background:#fff5f5;
+  color:#c0392b;
+  border:1px solid #ffcccc;
+  padding:1rem;
+  margin-top:1rem;
+}
+
+#chart-wrap{
+  height:300px;
+}
+
+.source-note{
+  margin-top:1rem;
+  font-size:.8rem;
+  color:#666;
+  line-height:1.8;
+}
+
+@media(max-width:768px){
+
+  .search-row{
+    flex-direction:column;
   }
 
-  /* ── Sections ── */
-  .section {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 2px;
-    margin-bottom: 1.25rem;
-    overflow: hidden;
-  }
-  .section-header {
-    padding: 0.75rem 1.5rem;
-    border-bottom: 1px solid var(--border);
-    font-family: var(--mono);
-    font-size: 0.65rem;
-    letter-spacing: 0.1em;
-    color: var(--text3);
-    text-transform: uppercase;
-    background: var(--surface2);
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
-  .section-header::before {
-    content: '';
-    display: inline-block;
-    width: 8px;
-    height: 8px;
-    background: var(--accent);
-    border-radius: 50%;
-    flex-shrink: 0;
-  }
-  .section-body { padding: 1.5rem; }
-
-  .overview-text {
-    font-size: 0.95rem;
-    line-height: 1.85;
-    color: var(--text2);
+  .search-row button{
+    width:100%;
+    height:50px;
   }
 
-  .fin-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 0;
-  }
-  .fin-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 0.6rem 0;
-    border-bottom: 1px solid var(--border);
-    font-size: 0.875rem;
-  }
-  .fin-row:last-child { border-bottom: none; }
-  .fin-row:nth-child(odd) { padding-right: 1.5rem; }
-  .fin-row:nth-child(even) { padding-left: 1.5rem; border-left: 1px solid var(--border); }
-  .fin-label { color: var(--text3); font-size: 0.8rem; }
-  .fin-value { font-family: var(--mono); font-weight: 500; font-size: 0.875rem; }
-
-  .analyst-box {
-    margin-top: 1rem;
-    padding: 1rem 1.25rem;
-    background: var(--accent-light);
-    border-left: 3px solid var(--accent);
-    border-radius: 0 2px 2px 0;
-    font-size: 0.875rem;
-    color: var(--text);
-    line-height: 1.7;
+  .fin-grid{
+    grid-template-columns:1fr;
   }
 
-  #chart-wrap { position: relative; height: 260px; }
+}
 
-  /* ── Source note ── */
-  .source-note {
-    font-size: 0.7rem;
-    color: var(--text3);
-    font-family: var(--mono);
-    letter-spacing: 0.04em;
-    padding: 1rem 0;
-    border-top: 1px solid var(--border);
-    margin-top: 0.5rem;
-    line-height: 1.7;
-  }
-
-  /* ── Disclaimer ── */
-  .disclaimer {
-    background: #fffbf0;
-    border: 1px solid #f5e4b3;
-    border-left: 3px solid var(--accent2);
-    border-radius: 2px;
-    padding: 0.875rem 1.25rem;
-    font-size: 0.75rem;
-    color: #7a5c1a;
-    line-height: 1.6;
-    margin-bottom: 1.5rem;
-  }
-
-  @media (max-width: 540px) {
-    .stock-hero { flex-direction: column; }
-    .stock-hero-right { text-align: left; }
-    .fin-grid { grid-template-columns: 1fr; }
-    .fin-row:nth-child(even) { padding-left: 0; border-left: none; }
-    .fin-row:nth-child(odd) { padding-right: 0; }
-    header { flex-direction: column; gap: 4px; }
-  }
 </style>
 </head>
+
 <body>
 
 <header>
-  <div>
-    <div class="sub">TW EQUITY RESEARCH</div>
-    <h1>SHOCKSHOCKSTOCK</h1>
-  </div>
-  <div style="font-family:var(--mono);font-size:0.7rem;color:#9c9890;letter-spacing:0.06em;"> spebus chen </div>
+  <h1>SHOCKSHOCKSTOCK</h1>
 </header>
 
 <main>
 
-  <div class="disclaimer">
-    ⚠ 謹慎投資． 小心理財．大家發大財 spebus®。
+<div class="search-wrap">
+
+  <div class="search-label">
+    輸入股票名稱或代碼
   </div>
 
-  <div class="search-wrap">
-    <div class="search-label">輸入股票名稱或代碼</div>
-    <div class="search-row">
-      <input type="text" id="stock-input" placeholder="例：台積電  或  2330" autocomplete="off" />
-      <button onclick="startAnalysis()">分析</button>
-    </div>
-    <div class="chips">
-      <span class="chips-label">快速：</span>
-      <button class="chip" onclick="quickSearch('台積電 2330')">台積電 2330</button>
-      <button class="chip" onclick="quickSearch('鴻海 2317')">鴻海 2317</button>
-      <button class="chip" onclick="quickSearch('聯發科 2454')">聯發科 2454</button>
-      <button class="chip" onclick="quickSearch('中華電信 2412')">中華電 2412</button>
-      <button class="chip" onclick="quickSearch('台灣大哥大 3045')">台灣大 3045</button>
-      <button class="chip" onclick="quickSearch('富邦金 2881')">富邦金 2881</button>
-    </div>
+  <div class="search-row">
+    <input
+      type="text"
+      id="stock-input"
+      placeholder="例如：2330 或 台積電"
+    />
+
+    <button onclick="startAnalysis()">
+      分析
+    </button>
   </div>
 
-  <div id="loading-ui">
-    <div class="loading-bar-wrap"><div class="loading-bar"></div></div>
-    <div id="loading-msg">AI 正在搜尋資料中...</div>
+  <div class="chips">
+    <button class="chip" onclick="quickSearch('2330 台積電')">2330 台積電</button>
+    <button class="chip" onclick="quickSearch('2317 鴻海')">2317 鴻海</button>
+    <button class="chip" onclick="quickSearch('2454 聯發科')">2454 聯發科</button>
+    <button class="chip" onclick="quickSearch('2412 中華電信')">2412 中華電信</button>
   </div>
 
-  <div id="content-ui"></div>
+</div>
+
+<div id="loading-ui">
+  AI 正在分析股票資料中...
+</div>
+
+<div id="content-ui"></div>
 
 </main>
 
 <script>
-// 
-const GEMINI_API_KEY ='AIzaSyAt_nA8nFZFOGcI0qS8nVAWpJv0defRnyU';
 
-let chartInstance = null;
+/* =======================================================
+   1. 把這裡換成你的 Gemini API KEY
+======================================================= */
 
-function quickSearch(val) {
-  document.getElementById('stock-input').value = val;
+const GEMINI_API_KEY = 'AIzaSyAt_nA8nFZFOGcI0qS8nVAWpJv0defRnyU';
+
+
+/* =======================================================
+   2. 快速搜尋
+======================================================= */
+
+function quickSearch(v){
+  document.getElementById('stock-input').value = v;
   startAnalysis();
 }
 
-document.getElementById('stock-input').addEventListener('keydown', e => {
-  if (e.key === 'Enter') startAnalysis();
+
+/* =======================================================
+   3. Enter 搜尋
+======================================================= */
+
+document
+.getElementById('stock-input')
+.addEventListener('keydown', e => {
+
+  if(e.key === 'Enter'){
+    startAnalysis();
+  }
+
 });
 
-async function startAnalysis() {
-  const input = document.getElementById('stock-input').value.trim();
-  if (!input) return;
+
+/* =======================================================
+   4. 主分析功能
+======================================================= */
+
+let chartInstance = null;
+
+async function startAnalysis(){
+
+  const input = document
+    .getElementById('stock-input')
+    .value
+    .trim();
+
+  if(!input) return;
 
   const loadingUI = document.getElementById('loading-ui');
   const contentUI = document.getElementById('content-ui');
@@ -447,232 +357,349 @@ async function startAnalysis() {
   loadingUI.style.display = 'block';
   contentUI.style.display = 'none';
   contentUI.innerHTML = '';
-  if (chartInstance) { chartInstance.destroy(); chartInstance = null; }
 
-  const msgs = [
-    'AI 正在搜尋鉅亨網資料...',
-    '分析財報狗財務指標...',
-    '整理股感公司資訊...',
-    '計算歷史股價趨勢...',
-    '生成完整分析報告...'
-  ];
-  let idx = 0;
-  const msgEl = document.getElementById('loading-msg');
-  const timer = setInterval(() => { idx = (idx+1)%msgs.length; msgEl.textContent = msgs[idx]; }, 1800);
-
-  const systemPrompt = `你是台灣股票分析師，請根據使用者輸入提供完整分析報告。
-只回傳 JSON，不含任何說明文字或 markdown 格式。
-格式：
-{
-  "code": "股票代碼",
-  "name": "公司中文名稱",
-  "fullName": "公司完整名稱",
-  "industry": "產業別",
-  "market": "上市/上櫃/興櫃",
-  "tags": ["標籤1","標籤2","標籤3"],
-  "overview": "公司剖析200字內，含成立年份、主要業務、市場地位、競爭優勢",
-  "currentPrice": 數字,
-  "priceChange": 數字,
-  "priceChangePct": 數字,
-  "pe": 數字,
-  "pb": 數字,
-  "dividendYield": 數字,
-  "eps": 數字,
-  "marketCap": "市值字串",
-  "revenue": "近年營收字串",
-  "roe": 數字,
-  "debtRatio": 數字,
-  "analystView": "分析師觀點2-3句",
-  "priceHistory": {
-    "labels": ["2024-01","2024-02","2024-03","2024-04","2024-05","2024-06","2024-07","2024-08","2024-09","2024-10","2024-11","2024-12","2025-01","2025-02","2025-03"],
-    "prices": [數字x15]
-  },
-  "sources": ["鉅亨網","財報狗","股感"],
-  "note": "資料說明",
-  "dataDate": "資料參考日期"
-}`;
-
-  try {
-  const res = await fetch(
-  `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GEMINI_API_KEY}`,
-  {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({
-      contents: [
-        {
-          parts: [
-            {
-              text: `${systemPrompt}\n\n分析台灣股票：${input}。請只回傳 JSON。`
-            }
-          ]
-        }
-      ],
-      generationConfig: {
-        temperature: 0.4,
-        maxOutputTokens: 2048,
-        responseMimeType: "application/json"
-      }
-    })
+  if(chartInstance){
+    chartInstance.destroy();
   }
-); 
 
-    clearInterval(timer);
+  const systemPrompt = `
+你是台灣股票分析師。
 
-    if (!res.ok) {
-      const err = await res.json().catch(() => ({}));
-      if (err.error && err.error.message && err.error.message.includes('API key')) {
-        throw new Error('API 金鑰無效，請確認 index.html 中的 Gemini API 是否已正確填入');
+請根據使用者輸入，
+生成一份股票分析 JSON。
+
+不要 markdown。
+不要說明。
+不要 \`\`\`json。
+
+格式：
+
+{
+  "code":"2330",
+  "name":"台積電",
+  "industry":"半導體",
+  "market":"上市",
+  "overview":"公司介紹",
+  "currentPrice":950,
+  "priceChange":12,
+  "priceChangePct":1.2,
+  "pe":25,
+  "pb":6,
+  "dividendYield":2.4,
+  "eps":38.5,
+  "marketCap":"24兆",
+  "revenue":"2.8兆",
+  "roe":32,
+  "debtRatio":28,
+  "analystView":"分析師觀點",
+  "priceHistory":{
+    "labels":["1月","2月","3月","4月","5月","6月"],
+    "prices":[800,820,840,860,900,950]
+  },
+  "sources":["Gemini AI"],
+  "note":"AI 生成內容僅供參考",
+  "dataDate":"2025"
+}
+`;
+
+  try{
+
+    /* =======================================================
+       5. 呼叫 Gemini API
+    ======================================================= */
+
+    const res = await fetch(
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GEMINI_API_KEY}`,
+      {
+        method:'POST',
+
+        headers:{
+          'Content-Type':'application/json'
+        },
+
+        body:JSON.stringify({
+
+          contents:[
+            {
+              parts:[
+                {
+                  text:
+`${systemPrompt}
+
+分析台灣股票：
+
+${input}`
+                }
+              ]
+            }
+          ],
+
+          generationConfig:{
+            temperature:0.4,
+            maxOutputTokens:2048,
+            responseMimeType:"application/json"
+          }
+
+        })
+
       }
-      throw new Error(`API 回應錯誤 (${res.status})`);
+    );
+
+
+    /* =======================================================
+       6. 錯誤檢查
+    ======================================================= */
+
+    if(!res.ok){
+
+      const errText = await res.text();
+
+      console.log(errText);
+
+      throw new Error(
+        `Gemini API 錯誤 (${res.status})`
+      );
+
     }
 
- const data = await res.json();
 
-const raw =
-  data.candidates?.[0]?.content?.parts?.[0]?.text;
+    /* =======================================================
+       7. 解析 Gemini 回傳
+    ======================================================= */
 
-if (!raw) {
-  throw new Error('Gemini 沒有回傳內容');
-}
+    const data = await res.json();
 
-const d = JSON.parse(raw);
+    console.log(data);
 
-  } catch (err) {
-    clearInterval(timer);
+    const raw =
+      data.candidates?.[0]?.content?.parts?.[0]?.text;
+
+    if(!raw){
+      throw new Error('Gemini 沒有回傳內容');
+    }
+
+    const d = JSON.parse(raw);
+
+
+    /* =======================================================
+       8. 顯示報告
+    ======================================================= */
+
+    renderReport(d);
+
     loadingUI.style.display = 'none';
+
     contentUI.style.display = 'block';
-    contentUI.innerHTML = `<div class="error-box">⚠ 分析失敗：${err.message}</div>`;
+
   }
+
+  catch(err){
+
+    console.error(err);
+
+    loadingUI.style.display = 'none';
+
+    contentUI.style.display = 'block';
+
+    contentUI.innerHTML = `
+      <div class="error-box">
+        ⚠ 分析失敗：${err.message}
+      </div>
+    `;
+  }
+
 }
 
-function renderReport(d) {
+
+/* =======================================================
+   9. 渲染報告
+======================================================= */
+
+function renderReport(d){
+
   const pos = d.priceChange >= 0;
+
   const sign = pos ? '+' : '';
+
   const cls = pos ? 'pos' : 'neg';
 
   document.getElementById('content-ui').innerHTML = `
+
     <div class="stock-hero">
-      <div class="stock-hero-left">
-        <div class="code">${d.code} · ${d.market} · ${d.industry}</div>
-        <div class="name">${d.name}</div>
-        <div class="tags">${(d.tags||[]).map(t=>`<span class="tag">${t}</span>`).join('')}</div>
+
+      <div>
+
+        <div class="code">
+          ${d.code} · ${d.market} · ${d.industry}
+        </div>
+
+        <div class="name">
+          ${d.name}
+        </div>
+
       </div>
-      <div class="stock-hero-right">
-        <div class="price-main">$${Number(d.currentPrice).toLocaleString()}</div>
-        <div class="price-change ${cls}">${sign}${Number(d.priceChange).toFixed(1)} &nbsp;(${sign}${Number(d.priceChangePct).toFixed(2)}%)</div>
+
+      <div>
+
+        <div class="price-main">
+          $${Number(d.currentPrice).toLocaleString()}
+        </div>
+
+        <div class="price-change ${cls}">
+          ${sign}${d.priceChange}
+          (${sign}${d.priceChangePct}%)
+        </div>
+
       </div>
+
     </div>
+
 
     <div class="metrics-grid">
+
       <div class="metric">
-        <div class="metric-label">本益比 P/E</div>
-        <div class="metric-value">${Number(d.pe).toFixed(1)}x</div>
-        <div class="metric-sub">EPS NT$${Number(d.eps).toFixed(2)}</div>
+        <div class="metric-label">P/E</div>
+        <div class="metric-value">${d.pe}</div>
       </div>
+
       <div class="metric">
         <div class="metric-label">殖利率</div>
-        <div class="metric-value">${Number(d.dividendYield).toFixed(2)}%</div>
-        <div class="metric-sub">P/B ${Number(d.pb).toFixed(2)}x</div>
+        <div class="metric-value">${d.dividendYield}%</div>
       </div>
+
       <div class="metric">
-        <div class="metric-label">市值</div>
-        <div class="metric-value">${d.marketCap}</div>
-        <div class="metric-sub">近年營收 ${d.revenue}</div>
+        <div class="metric-label">ROE</div>
+        <div class="metric-value">${d.roe}%</div>
       </div>
+
       <div class="metric">
-        <div class="metric-label">股東權益報酬率</div>
-        <div class="metric-value">${Number(d.roe).toFixed(1)}%</div>
-        <div class="metric-sub">負債比 ${Number(d.debtRatio).toFixed(1)}%</div>
+        <div class="metric-label">EPS</div>
+        <div class="metric-value">${d.eps}</div>
       </div>
+
     </div>
 
-    <div class="section">
-      <div class="section-header">公司剖析</div>
-      <div class="section-body">
-        <div class="overview-text">${d.overview}</div>
-      </div>
-    </div>
 
     <div class="section">
-      <div class="section-header">歷史股價走勢（近15個月）</div>
-      <div class="section-body">
-        <div id="chart-wrap"><canvas id="price-chart"></canvas></div>
-      </div>
-    </div>
 
-    <div class="section">
-      <div class="section-header">財務指標</div>
+      <div class="section-header">
+        公司介紹
+      </div>
+
       <div class="section-body">
-        <div class="fin-grid">
-          <div class="fin-row"><span class="fin-label">本益比</span><span class="fin-value">${Number(d.pe).toFixed(1)}x</span></div>
-          <div class="fin-row"><span class="fin-label">殖利率</span><span class="fin-value">${Number(d.dividendYield).toFixed(2)}%</span></div>
-          <div class="fin-row"><span class="fin-label">股價淨值比</span><span class="fin-value">${Number(d.pb).toFixed(2)}x</span></div>
-          <div class="fin-row"><span class="fin-label">ROE</span><span class="fin-value">${Number(d.roe).toFixed(1)}%</span></div>
-          <div class="fin-row"><span class="fin-label">EPS</span><span class="fin-value">NT$${Number(d.eps).toFixed(2)}</span></div>
-          <div class="fin-row"><span class="fin-label">負債比率</span><span class="fin-value">${Number(d.debtRatio).toFixed(1)}%</span></div>
+
+        <div class="overview-text">
+          ${d.overview}
         </div>
-        <div class="analyst-box">${d.analystView}</div>
+
       </div>
+
     </div>
+
+
+    <div class="section">
+
+      <div class="section-header">
+        AI 分析觀點
+      </div>
+
+      <div class="section-body">
+
+        ${d.analystView}
+
+      </div>
+
+    </div>
+
+
+    <div class="section">
+
+      <div class="section-header">
+        股價趨勢
+      </div>
+
+      <div class="section-body">
+
+        <div id="chart-wrap">
+          <canvas id="price-chart"></canvas>
+        </div>
+
+      </div>
+
+    </div>
+
 
     <div class="source-note">
-      資料來源：${(d.sources||[]).join('、')} &nbsp;·&nbsp; 參考日期：${d.dataDate}<br>
+
+      資料來源：
+      ${(d.sources || []).join('、')}
+
+      <br><br>
+
       ${d.note}
+
     </div>
+
   `;
 
-  setTimeout(() => drawChart(d.priceHistory), 80);
+  drawChart(d.priceHistory);
+
 }
 
-function drawChart(h) {
-  const canvas = document.getElementById('price-chart');
-  if (!canvas || !h) return;
 
-  if (chartInstance) chartInstance.destroy();
-  chartInstance = new Chart(canvas, {
-    type: 'line',
-    data: {
-      labels: h.labels,
-      datasets: [{
-        data: h.prices,
-        borderColor: '#1a6b4a',
-        borderWidth: 2,
-        backgroundColor: 'rgba(26,107,74,0.07)',
-        fill: true,
-        tension: 0.3,
-        pointRadius: 3,
-        pointBackgroundColor: '#1a6b4a',
-        pointBorderWidth: 0,
-        pointHoverRadius: 5
+/* =======================================================
+   10. 畫圖
+======================================================= */
+
+function drawChart(h){
+
+  if(!h) return;
+
+  const ctx = document.getElementById('price-chart');
+
+  chartInstance = new Chart(ctx, {
+
+    type:'line',
+
+    data:{
+
+      labels:h.labels,
+
+      datasets:[{
+
+        data:h.prices,
+
+        borderColor:'#1a6b4a',
+
+        backgroundColor:'rgba(26,107,74,0.1)',
+
+        fill:true,
+
+        tension:0.3
+
       }]
+
     },
-    options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      plugins: {
-        legend: { display: false },
-        tooltip: { callbacks: { label: ctx => `NT$ ${Number(ctx.raw).toLocaleString()}` } }
-      },
-      scales: {
-        x: {
-          grid: { color: 'rgba(0,0,0,0.05)' },
-          ticks: { color: '#9c9890', font: { size: 11, family: "'DM Mono', monospace" }, maxTicksLimit: 8 }
-        },
-        y: {
-          grid: { color: 'rgba(0,0,0,0.05)' },
-          ticks: {
-            color: '#9c9890',
-            font: { size: 11, family: "'DM Mono', monospace" },
-            callback: v => `$${Number(v).toLocaleString()}`
-          }
+
+    options:{
+
+      responsive:true,
+
+      maintainAspectRatio:false,
+
+      plugins:{
+        legend:{
+          display:false
         }
       }
+
     }
+
   });
+
 }
+
 </script>
+
 </body>
 </html>
